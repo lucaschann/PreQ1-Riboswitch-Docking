@@ -1,0 +1,32 @@
+# ChimeraX commands used in this study (type into the ChimeraX command bar)
+
+# --- Box center: centroid of crystallographic PreQ1 (residue PRF) ---
+open 4rzd
+select :PRF
+define centroid sel radius 0.5 color orange
+# Log reported 32.0547, 29.3151, 107.8961 (rounded to 32.05, 29.32, 107.90)
+
+# --- Receptor: run Dock Prep from the Tools menu (Structure Editing > Dock Prep)
+# with default options, then export (Meeko later dropped PRF) ---
+select ~:PRF
+save 4rzd_receptor.pdb format pdb models sel
+
+# --- Hydrogen bonds of the crystal PreQ1 (reference contacts) ---
+close
+open 4rzd
+hbonds :PRF restrict cross reveal true log true saveFile hbonds_crystal_preq1.txt
+
+# --- Hydrogen bonds of one docked pose (example: melamine; repeat per compound) ---
+close
+open 4rzd
+delete :PRF
+delete solvent
+open melamine_dock.pdbqt
+close #2.2-9
+hbonds #2.1 restrict cross reveal true log true saveFile hbonds_melamine.txt
+
+# --- Residues within 5 A of crystallographic PreQ1 ---
+close
+open 4rzd
+select :PRF :<5
+info residues sel
